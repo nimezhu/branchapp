@@ -1,19 +1,20 @@
 <html>
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-		<link rel="stylesheet" href="master.css" type="text/css" media="screen" charset="utf-8">
  		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     		<script src="http://d3js.org/d3.v3.min.js"></script>		
 	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
-
 <!-- Optional theme -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
 
+		<link rel="stylesheet" href="master.css" type="text/css" media="screen" charset="utf-8">
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
-
+<!--
+	<script src="lib/angular-ui-bootstrap-modal.js"></script>
+	-->
 	<title>Branchpoints Predict</title>
 </head>
 <body>
@@ -29,19 +30,70 @@
 <!--
 <button ng-click="loadFile()" class="btn-xs">Load File</button> <input type="file" ng-model="file"></input>
 -->
+<button ng-click="openFile()" style="" class="btn-xs">Load File</button>
 <button ng-click="demo()" style="" class="btn-xs">Load Demo</button>
 <button ng-click="clearFaText()" style="" class="btn-xs">Clear</button>
 </div>
+<div modal="showModal" close="cancel()" ng-show="showModal">
+<div class="modal-header"></div>	
+<div class="modal-body">
+	<span>Open File:</span>
+	<input type="file" fileread="file"></input>
+	
+</div>	
+<div class="modal-footer">
+	 <button class="btn btn-success" id="ok" ng-click="ok()">O.K.</button>
+        <button class="btn" ng-click="cancel()">Cancel</button>
+	
+</div>	
+</div>
+
 <textArea ng-model="faText" cols=70 rows=15 style="overflow-y:scroll"></textArea>
 <button ng-click="predictFaText()" class="btn-primary">Predict</button>
 <div>
 		<div ng-repeat="i in introns" id="{{i.id}}" name="{{i.id}}">{{i.id}}</div>
 </div>
+
+
 </div>
+
+
 <script>
 (function($,d3,ng){
 var app=ng.module("MyApp",[]);
+app.directive("fileread", [function () {
+    return {
+        scope: {
+            fileread: "=" 
+        },  
+        link: function (scope, element, attributes) {
+            element.bind("change", function (changeEvent) {
+                scope.$apply(function () {
+                    scope.fileread = changeEvent.target.files[0];
+                }); 
+            }); 
+        }   
+    }   
+}]);
 app.controller("MyCtrl",function($scope){
+$scope.showModal=false;
+$scope.openFile = function() {
+	$scope.showModal=true;
+}	
+$scope.ok = function() {
+	var ft=$scope.file;
+	var reader = new FileReader();
+	reader.readAsText(ft);
+	reader.onload = function(e) {
+		$scope.faText=reader.result;
+		$scope.$apply();
+	}
+	$scope.showModal=false;
+}
+$scope.cancel = function() {
+     $scope.showModal = false;
+}
+
 $scope.clearFaText = function() {
 	$scope.faText=""
 }
