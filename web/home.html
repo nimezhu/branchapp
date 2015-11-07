@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		<link rel="stylesheet" href="master.css" type="text/css" media="screen" charset="utf-8">
+ 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    		<script src="http://d3js.org/d3.v3.min.js"></script>		
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+
+	<title>Branchpoints Predict</title>
+</head>
+<body>
+<ul class="nav nav-tabs">
+  <li role="presentation"  class="active"><a href="home.html">Home</a></li>
+  <li role="presentation"><a href="predict.html">Predict</a></li>
+  <li role="presentation" ><a href="query.html">Query Gene</a></li>
+</ul>
+
+<div style="padding:10px" ng-app="MyApp" ng-controller="MyCtrl" ng-init="">
+		<h1 id="title">Multi-label learning approaches to human splicing branchpoint prediction</h1>
+		<div id="authors"> <a>Wen Zhang</a>, <a >Zhiping Weng</a>
+		</div>
+		<div id="significance">
+<p><span class="firstletter">T</span>he splicing branchpoints are critical elements for exerting biological function and also provide important information for understanding the mechanism. In this paper, we put efforts into the human branchpoint prediction problem, by using a large-scale experiment-verified human branchpoint datasets. By extracting a variety of sequence-derived features the characterize introns and representing the locations of branchpoints as vectors, we transform the problem of branchpoint prediction into the multi-learning problem, which build the relationship between feature vectors and location vectors. The cross validation experiments demonstrate the proposed method can produce better results than other state-of-the-art methods, and can recognize all types of branchpoints. </p>
+		</div>
+		
+		<h2>Paper</h2>
+		<ul>
+			Multi-label learning approaches to the prediction of human splicing branchpoints, <em>uploaded to Oxford Bioinformatics</em>. 
+		</ul>
+
+		<div id="footer"><em>Last updated: Oct. 26, 2015.<br />Wen Zhang (<a href="mailto:zhangwen@whu.edu.cn">zhangwen@whu.edu.cn</a>)</em></div>
+</div>
+</body>
+	</html>

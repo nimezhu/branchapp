@@ -1,0 +1,165 @@
+<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		<link rel="stylesheet" href="master.css" type="text/css" media="screen" charset="utf-8">
+ 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    		<script src="http://d3js.org/d3.v3.min.js"></script>		
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+
+	<title>Branchpoints Predict</title>
+</head>
+<body>
+<ul class="nav nav-tabs">
+  <li role="presentation" ><a href="home.html">Home</a></li>
+  <li role="presentation" class="active"><a href="predict.html">Predict</a></li>
+  <li role="presentation" ><a href="query.html">Query Gene</a></li>
+</ul>
+
+<div style="padding:10px" ng-app="MyApp" ng-controller="MyCtrl" ng-init="">
+<h4>FASTA SEQUENCES</h4>
+<div>
+<!--
+<button ng-click="loadFile()" class="btn-xs">Load File</button> <input type="file" ng-model="file"></input>
+-->
+<button ng-click="demo()" style="" class="btn-xs">Load Demo</button>
+<button ng-click="clearFaText()" style="" class="btn-xs">Clear</button>
+</div>
+<textArea ng-model="faText" cols=70 rows=15 style="overflow-y:scroll"></textArea>
+<button ng-click="predictFaText()" class="btn-primary">Predict</button>
+<div>
+		<div ng-repeat="i in introns" id="{{i.id}}" name="{{i.id}}">{{i.id}}</div>
+</div>
+</div>
+<script>
+(function($,d3,ng){
+var app=ng.module("MyApp",[]);
+app.controller("MyCtrl",function($scope){
+$scope.clearFaText = function() {
+	$scope.faText=""
+}
+$scope.demo =function() {
+	$scope.faText=">intron1\nTATGGAGGACTTGGGCATATTTGGCCAATGTAACACATTTTTATGGTGATTGTTTTCTAG\n>intron2\nTATGGAGGACTTGGGCATATTTGGCCAATGTAACACATTTTTATGGTGATTGTTTTCTAG"
+}
+$scope.predictFaText = function() {
+   var seqs=parseFa($scope.faText)
+   console.log(seqs)
+   $scope.introns=seqs;
+   $scope.introns.forEach(function(d){
+   	 predict(d);
+   })
+}
+var predict=function(i) {
+	$.ajax(
+		{ url:"/predict",
+		  data: {"seq":i.seq.toUpperCase()},
+		  dataType: "json",
+		  type: "GET",
+		  success: function(d) {
+			i.result=d.result;
+			$scope.$apply();
+			render(i);
+		  }
+		}
+		)
+}
+})
+/* FIGURE SECTION */
+var ncolor = { "A":4,"a":4,"C":1,"c":1,"G":2,"g":2,"T":3,"t":3}
+var color = d3.scale.category10().domain([1,2,3,4,5,6,7,8,9,0]);
+var ncolors = function(n) {
+	if (ncolor[n]) {
+	return color(ncolor[n]);
+	} else {
+	return "grey";
+	}
+}
+var barchart = function() {
+var height=200;
+var width=10;
+var chart = function(selection) {
+	selection.each(function(d,i){
+	if(!d.result) {return}
+	var scale=d3.scale.linear().range([height,0]);
+	var minY=d3.min(d.result)
+	var maxY=d3.max(d.result)
+	scale.domain([minY,maxY])
+	if(d.v) {
+	d3.select(this).selectAll(".v").data(d.v).enter().append("text")
+	.attr("class","v")
+	.attr("x",function(d) { return (d[0]-10)*width})
+	.attr("y",function(d1) { var e=d.result[d1[0]-10]
+	if(e>0) { return scale(e) }
+	else { return scale(e)+10 }
+	})
+	//.attr("y",20)
+	.text("*")
+	}
+	d3.select(this).selectAll("rect").data(d.result).enter()
+		.append("rect")
+		.attr("x",function(d,i){return i*width})
+		.attr("y",function(d,i){return scale(Math.max(0,d))})
+		.attr("height",function(d,i){return Math.abs(scale(d)-scale(0))})
+		.attr("width",width-2)
+		.attr("fill",function(d0,i) {return ncolors(d.seq[i+10])})
+		.append("title")
+		.text(function(d0,i){return d.seq[i+10]+":"+(i-50)+":"+d0})
+	d3.select(this).append("text")
+	.attr("x",-30)
+	.attr("y",scale(0)+5)
+	.text("-50")	
+	d3.select(this).append("text")
+	.attr("x",40*width)
+	.attr("y",scale(0)+5)
+	.text("-11")
+	 var yAxis = d3.svg.axis()
+                  .scale(scale)
+		.orient("right")
+			;
+	var yG = d3.select(this).append("g").attr("transform","translate("+(40*width+30)+")")
+                              .call(yAxis);
+	var l = d3.select(this).append("g").attr("transform","translate("+40*width+",20)")
+		.selectAll("g").data(["A","C","G","T"]).enter()
+		.append("g").attr("transform",function(d,i){return "translate(5,"+i*20+")"})
+		.append("text")
+		.text(function(d,i){return d})
+		.attr("fill",function(d,i){return ncolors(d)})
+
+	}
+	);	
+    }
+return chart;
+}
+
+function render(i) {
+		var barplot=barchart();	
+		console.log(i);
+		var svg=d3.select('#'+i.id).datum(i).append("svg").attr("height","250px").attr("width","800px");
+		svg.append("g").attr("transform","translate(40,20)").call(barplot);
+	}
+
+function parseFa(txt) {
+	var s=txt.split(">")
+	if(s.length==0) {return []}
+	s.shift();
+	var retv=[];
+	s.forEach(function(d){
+		var lines=d.split("\n");
+		var name=lines.shift();
+		var seq=lines.join("")
+		retv.push({"id":name,"seq":seq})
+	})
+	return retv;
+}
+
+}(jQuery,d3,angular))
+</script>
+</body>
+</html>
