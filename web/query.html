@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
 
 		<link rel="stylesheet" href="master.css" type="text/css" media="screen" charset="utf-8">
+		<link rel="stylesheet" href="autocomplete.css" type="text/css" media="screen" charset="utf-8">
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
 <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
@@ -29,9 +30,10 @@
   <input ng-model="gene" id="gene">
 <button ng-click="query()" class="btn-primary">query</button>
 </div>
-<div style="height:200px">
+<div>
+<label>Intron Number</label>: {{introns.length}} 
 </div>
-<div id="svgs">
+<div id="svgs" style="height:100%;overflow-y:scroll">
 	<div ng-repeat="i in introns" id="{{i.id}}" name="{{i.id}}" class="figure">{{i.id}}</div>
 </div>
 </div>
@@ -57,6 +59,7 @@ var limit=8;
         },
 	select: function(event, ui) { 
 		$scope.gene=ui.item.label
+                $scope.query();
     	}
     });
 }
