@@ -13,7 +13,7 @@
 		<link rel="stylesheet" href="master.css" type="text/css" media="screen" charset="utf-8">
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
-
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 	<title>Query Gene's Branchpoints</title>
 </head>
 <body>
@@ -24,9 +24,16 @@
 </ul>
 
 <div style="padding:10px" ng-app="MyApp" ng-controller="MyCtrl" ng-init="">
-<input ng-model="gene"></input>
+<div class="ui-widget">
+  <label for=gene">Gene: </label>
+  <input ng-model="gene" id="gene">
 <button ng-click="query()" class="btn-primary">query</button>
-	<div ng-repeat="i in introns" id="{{i.id}}" name="{{i.id}}">{{i.id}}</div>
+</div>
+<div style="height:200px">
+</div>
+<div id="svgs">
+	<div ng-repeat="i in introns" id="{{i.id}}" name="{{i.id}}" class="figure">{{i.id}}</div>
+</div>
 </div>
 <script>
 (function($,d3,ng){
@@ -34,7 +41,26 @@ var app=ng.module("MyApp",[]);
 app.controller("MyCtrl",function($scope){
 var demo='{"jsonrpc":"2.0","id":"introns","method":"introns","params":["STAT1"]}';
 $scope.gene="STAT1"
-
+$.ajax( {
+url:"/list",
+type:"GET",
+data: {},
+dataType: "json",
+success: function(d) {
+	$scope.genes=d.result
+console.log($scope.genes)
+var limit=8;
+ $("#gene" ).autocomplete({
+      source: function(req,res) {
+	    var results = $.ui.autocomplete.filter($scope.genes, req.term);
+            res(results.slice(0, limit));
+        },
+	select: function(event, ui) { 
+		$scope.gene=ui.item.label
+    	}
+    });
+}
+})
 var predict=function(i) {
 	$.ajax(
 		{ url:"/predict",
@@ -49,6 +75,7 @@ var predict=function(i) {
 		}
 		)
 }
+
 $scope.query = function() {
 $.ajax({ url:"/introns",
 	 data: {"gene":$scope.gene},

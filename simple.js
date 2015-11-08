@@ -48,6 +48,16 @@ app.get('/predict',function(req,res){
    );
 });
 
+app.get('/list',function(req,res){
+        client.call(
+                {"jsonrpc":"2.0","method": "list", "params": [],"id":"listgene"},
+        function (err, res2) {
+    		if (err) { console.log("error",err); }
+    		else { res.json(res2)}
+     	}
+   );
+});
+
 
 
 

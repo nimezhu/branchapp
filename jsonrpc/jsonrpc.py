@@ -17,7 +17,8 @@ cursor.execute(s)
 r=cursor.fetchall()
 h={}
 DataS3=binindex(TableIO.parse("data/DataS3.uniq.bed.gz","bed6"))
-
+genelist=[i.id for i in r] 
+print(genelist)
 for i in r:
     h[i.id]=i
 	
@@ -42,6 +43,10 @@ class RequestHandler(pyjsonrpc.HttpRequestHandler):
              v = [ Tools.translate_coordinate(j,d) for d in DataS3.query(j)]
 	     retv.append({"chr":j.chr,"id":j.id,"start":j.start,"end":j.end,"strand":j.strand,"v":v})
       return retv
+  @pyjsonrpc.rpcmethod 
+  def list(self):
+      return genelist
+      
       
        
 http_server = pyjsonrpc.ThreadingHttpServer(
