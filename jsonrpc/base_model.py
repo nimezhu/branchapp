@@ -109,7 +109,7 @@ def sequence_encode(seq):  # -55-0
      # print(BiSparsefeatureVector.shape)
      # print(sparse_featureVector.shape)
 
-     vector=list(np.concatenate((MorkovfeatureVector,PSSMfeatureVector,BiSparsefeatureVector,sparse_featureVector),axis=1))
+     vector=list(np.concatenate((MorkovfeatureVector,PSSMfeatureVector,BiSparsefeatureVector,sparse_featureVector),axis=0))
      return vector
 
 def get_predict_parameter():

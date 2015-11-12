@@ -25,7 +25,26 @@
 </ul>
 
 <div style="padding:10px" ng-app="MyApp" ng-controller="MyCtrl" ng-init="">
-<h4>FASTA SEQUENCES</h4>
+
+<h4>FASTA SEQUENCE PREDICTION</h4>
+
+<p>
+		<table>
+			<tr>
+				<td bgcolor="lavender">
+					<font face="courier" size=3><B>Input your upstream sequence of intron 3' in fasta format:</B><br></font>
+					<font face="courier" size=2>1) sequence should be longer than 55 nt;<br></font>
+					<font face="courier" size=2>2) contain characters other than a,c,g,t,A,C,G,T;<br></font>
+					<font face="courier" size=2>3) make predicts for sites between -50 and -11 upstream of 3SS;<br></font>
+		         	<font face="courier" size=2>4) predicted results are showen by figures; <br></font>
+					<font face="courier" size=2>5) in the plotted figure, you put mouse cursor to see predicted score; <br></font>
+                  	<font face="courier" size=2>6) example:press load demo button and press predict button</font>
+				</td>
+			</tr>
+		</table>
+</p>
+
+
 <div>
 <!--
 <button ng-click="loadFile()" class="btn-xs">Load File</button> <input type="file" ng-model="file"></input>
@@ -50,6 +69,7 @@
 
 <textArea ng-model="faText" cols=70 rows=15 style="overflow-y:scroll"></textArea>
 <button ng-click="predictFaText()" class="btn-primary">Predict</button>
+<button ng-click="save()" class="btn-primary">Download</button>
 <div>
 		<div ng-repeat="i in introns" id="{{i.id}}" name="{{i.id}}">{{i.id}}</div>
 </div>
@@ -60,6 +80,29 @@
 
 <script>
 (function($,d3,ng){
+var saveDataAsFile= function(data,filename) {
+	var dataToWrite = JSON.stringify(data);
+	var dataFileAsBlob = new Blob([dataToWrite], {type:'text/json'});
+	var fileNameToSaveAs = filename; 
+	var downloadLink = document.createElement("a");
+	downloadLink.download = fileNameToSaveAs;
+	downloadLink.innerHTML = "Download File";
+	if (window.webkitURL != null)
+	{
+		downloadLink.href = window.webkitURL.createObjectURL(dataFileAsBlob);
+	}
+	else
+	{
+		downloadLink.href = window.URL.createObjectURL(dataFileAsBlob);
+		downloadLink.onclick = destroyClickedElement;
+		downloadLink.style.display = "none";
+		document.body.appendChild(downloadLink);
+
+	}
+	downloadLink.click();
+}
+
+
 var app=ng.module("MyApp",[]);
 app.directive("fileread", [function () {
     return {
@@ -98,7 +141,7 @@ $scope.clearFaText = function() {
 	$scope.faText=""
 }
 $scope.demo =function() {
-	$scope.faText=">intron1\nTATGGAGGACTTGGGCATATTTGGCCAATGTAACACATTTTTATGGTGATTGTTTTCTAG\n>intron2\nTATGGAGGACTTGGGCATATTTGGCCAATGTAACACATTTTTATGGTGATTGTTTTCTAG"
+	$scope.faText=">intron1\nTATGGAGGACTTGGGCATATTTGGCCAATGTAACACATTTTTATGGTGATTGTTTTCTAG\n>intron2\nCTGTATTTAAGTCTCCGGGGGCTGGGGGAATCAGGGTTTCCCACCAACCACCCTCACTCAGCCTTTTCCCTCCAG"
 }
 $scope.predictFaText = function() {
    var seqs=parseFa($scope.faText)
@@ -107,6 +150,9 @@ $scope.predictFaText = function() {
    $scope.introns.forEach(function(d){
    	 predict(d);
    })
+}
+$scope.save=function() {
+	saveDataAsFile($scope.introns,"branchpoints.json")
 }
 var predict=function(i) {
 	$.ajax(

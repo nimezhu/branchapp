@@ -24,11 +24,28 @@
   <li role="presentation" class="active"><a href="query.html">Query Gene</a></li>
 </ul>
 
+<h4>QUERY YOUR INTERESTED GENES</h4>
+
+<p>
+		<table>
+			<tr>
+				<td bgcolor="lavender">
+					<font face="courier" size=2>1) input the gene name and query;<br></font>
+					<font face="courier" size=2>2) all introns are retrieved,branchpoints are shown for each introns;<br></font>
+		         	<font face="courier" size=2>3) experimentally verified branchpoints are marked '*', others are predicted scores</font>
+	
+				</td>
+			</tr>
+		</table>
+</p>
+
+
 <div style="padding:10px" ng-app="MyApp" ng-controller="MyCtrl" ng-init="">
 <div class="ui-widget">
   <label for=gene">Gene: </label>
   <input ng-model="gene" id="gene">
 <button ng-click="query()" class="btn-primary">query</button>
+<button ng-click="save()" class="btn-primary">download</button>
 </div>
 <div>
 <label>Intron Number</label>: {{introns.length}} 
@@ -39,6 +56,28 @@
 </div>
 <script>
 (function($,d3,ng){
+var saveDataAsFile= function(data,filename) {
+	var dataToWrite = JSON.stringify(data);
+	var dataFileAsBlob = new Blob([dataToWrite], {type:'text/json'});
+	var fileNameToSaveAs = filename; 
+	var downloadLink = document.createElement("a");
+	downloadLink.download = fileNameToSaveAs;
+	downloadLink.innerHTML = "Download File";
+	if (window.webkitURL != null)
+	{
+		downloadLink.href = window.webkitURL.createObjectURL(dataFileAsBlob);
+	}
+	else
+	{
+		downloadLink.href = window.URL.createObjectURL(dataFileAsBlob);
+		downloadLink.onclick = destroyClickedElement;
+		downloadLink.style.display = "none";
+		document.body.appendChild(downloadLink);
+
+	}
+	downloadLink.click();
+}
+
 var app=ng.module("MyApp",[]);
 app.controller("MyCtrl",function($scope){
 var demo='{"jsonrpc":"2.0","id":"introns","method":"introns","params":["STAT1"]}';
@@ -50,7 +89,6 @@ data: {},
 dataType: "json",
 success: function(d) {
 	$scope.genes=d.result
-console.log($scope.genes)
 var limit=8;
  $("#gene" ).autocomplete({
       source: function(req,res) {
@@ -85,7 +123,6 @@ $.ajax({ url:"/introns",
 	 type: "GET",
 	 dataType: "json",
          success: function(d) {
-		console.log(d)
 		$scope.introns=d.result;
 		$scope.introns.forEach(function(d){
 			getseq(d,predict);
@@ -94,6 +131,9 @@ $.ajax({ url:"/introns",
 		$scope.$apply();
  	}
     })
+}
+$scope.save=function() {
+	saveDataAsFile($scope.introns,$scope.gene+"_branchpoints.json")
 }
 /* FIGURE SECTION */
 var ncolor = { "A":4,"a":4,"C":1,"c":1,"G":2,"g":2,"T":3,"t":3}
@@ -165,7 +205,7 @@ return chart;
 function render(i) {
 		var barplot=barchart();	
 		console.log(i);
-		var svg=d3.select('#'+i.id).datum(i).append("svg").attr("height","250px").attr("width","800px");
+		var svg=d3.select('#'+i.id).datum(i).append("svg").attr("height","250px").attr("width","570px");
 		svg.append("g").attr("transform","translate(40,20)").call(barplot);
 	}
 
