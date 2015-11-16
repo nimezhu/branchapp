@@ -18,33 +18,36 @@
 	<title>Branchpoints Predict</title>
 </head>
 <body>
+	
+		<h1 id="title"><font color="black"><I><B>Web for Predicting and Querying Human Branchpoints</B></I></font></h1>
+	
 <ul class="nav nav-tabs">
   <li role="presentation" ><a href="home.html">Home</a></li>
   <li role="presentation" class="active"><a href="predict.html">Predict</a></li>
   <li role="presentation" ><a href="query.html">Query Gene</a></li>
 </ul>
 
-<div style="padding:10px" ng-app="MyApp" ng-controller="MyCtrl" ng-init="">
 
-<h4>FASTA SEQUENCE PREDICTION</h4>
+
+<h4><B>Fasta Sequence Prediction</B></h4>
 
 <p>
 		<table>
 			<tr>
 				<td bgcolor="lavender">
-					<font face="courier" size=3><B>Input your upstream sequence of intron 3' in fasta format:</B><br></font>
-					<font face="courier" size=2>1) sequence should be longer than 55 nt;<br></font>
-					<font face="courier" size=2>2) contain characters other than a,c,g,t,A,C,G,T;<br></font>
-					<font face="courier" size=2>3) make predicts for sites between -50 and -11 upstream of 3SS;<br></font>
-		         	<font face="courier" size=2>4) predicted results are showen by figures; <br></font>
-					<font face="courier" size=2>5) in the plotted figure, you put mouse cursor to see predicted score; <br></font>
-                  	<font face="courier" size=2>6) example:press load demo button and press predict button</font>
+					<font face="courier" size=2>1) Input your upstream sequence of intron 3' in fasta format:<br></font>
+					<font face="courier" size=2>2) Not contain characters other than a,c,g,t,A,C,G,T;<br></font>
+					<font face="courier" size=2>3) Sequence should be longer than 55 nt;<br></font>
+					<font face="courier" size=2>4) Prediction for sites between -50 and -11 upstream of intron 3';<br></font>
+		         	<font face="courier" size=2>5) Predicted results are shown by figures; <br></font>
+                  	<font face="courier" size=2>6) Example:press "load demo" button and then press "predict" button;<br></font>
+                	<font face="courier" size=2>7) Click "download" button to download prediction scores</font>
 				</td>
 			</tr>
 		</table>
 </p>
 
-
+<div style="padding:10px" ng-app="MyApp" ng-controller="MyCtrl" ng-init="">
 <div>
 <!--
 <button ng-click="loadFile()" class="btn-xs">Load File</button> <input type="file" ng-model="file"></input>
@@ -67,7 +70,8 @@
 </div>	
 </div>
 
-<textArea ng-model="faText" cols=70 rows=15 style="overflow-y:scroll"></textArea>
+<textArea ng-model="faText" cols=80 rows=15 style="overflow-y:scroll"></textArea>
+<br>
 <button ng-click="predictFaText()" class="btn-primary">Predict</button>
 <button ng-click="save()" class="btn-primary">Download</button>
 <div>
@@ -259,5 +263,9 @@ function parseFa(txt) {
 
 }(jQuery,d3,angular))
 </script>
+
+	<div id="footer"><em>Last updated: Oct. 26, 2015.<br />Wen Zhang (<a href="mailto:zhangwen@whu.edu.cn">zhangwen@whu.edu.cn</a>)</em></div>
+</div>
+
 </body>
 </html>

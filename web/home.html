@@ -19,24 +19,31 @@
 	<title>Branchpoints Predict</title>
 </head>
 <body>
+	
+	<h1 id="title"><font color="black"><I><B>Web for Predicting and Querying Human Branchpoints</B></I></font></h1>
+	
+	
 <ul class="nav nav-tabs">
   <li role="presentation"  class="active"><a href="home.html">Home</a></li>
   <li role="presentation"><a href="predict.html">Predict</a></li>
   <li role="presentation" ><a href="query.html">Query Gene</a></li>
 </ul>
 
-<div style="padding:10px" ng-app="MyApp" ng-controller="MyCtrl" ng-init="">
-		<h1 id="title">Multi-label learning approaches to human splicing branchpoint prediction</h1>
-		<div id="authors"> <a>Wen Zhang</a>,<a>Xiaopeng Zhu</a>,<a>Yu Fu</a>,<a>Junko Tsuji</a>, <a >Zhiping Weng</a>
-		</div>
-		<div id="significance">
-<p align="justify"><span class="firstletter">B</span>ranchpoints provide important clues for the alternative splicing, and thus predicting human branchpoint is an important topic. In this paper, we aim to build the high-accuracy branchpoint prediction models by using machine learning techniques. We observe that almost all branchpoints are located between -50 and -11 upstream of 3SS (3’ of introns) and one intron may include multiple branchpoints. Therefore, we transform the original problem into a task of multi-label learning, whose prediction targets are binary vectors which represent the presence or absence of branchpoints between -50 and -11 upstream. Then, we extract a diversity of intron sequence-derived features which can characterize branchpoints, and consider several multi-label learning methods to build the relationship between features and location of branchpoints. Finally, we adopt an average scoring-based strategy to integrate different methods and features, and develop the prediction model. Computational experiments on the experimentally verified dataset demonstrate that the proposed method can produce better results than other state-of-the-art methods. More importantly, the method can predict not only the ‘A’ branchpoints but also other types of branchpoints. We develop the user-friendly web server for computational service. </p>
-		</div>
-		
-		<h2>Paper</h2>
-		
-		Multi-label learning approaches to the prediction of human splicing branchpoints, <em>submitted to Oxford Bioinformatics</em>. 
-		<B>Co-corresponding authors: Wen Zhang, Zhiping Weng</B>
+
+
+	 <h4><B>Background</B></h4>		
+<p align="justify">Branchpoints provide important clues for the alternative splicing, and thus predicting human branchpoint is an important topic. In this paper, we aim to build the high-accuracy branchpoint prediction models by using machine learning techniques. We observe that almost all branchpoints are located between -50 and -11 upstream of 3SS (3’ of introns) and one intron may include multiple branchpoints. Therefore, we transform the original problem into a task of multi-label learning, whose prediction targets are binary vectors which represent the presence or absence of branchpoints between -50 and -11 upstream. Then, we extract a diversity of intron sequence-derived features which can characterize branchpoints, and consider several multi-label learning methods to build the relationship between features and location of branchpoints. Finally, we adopt an average scoring-based strategy to integrate different methods and features, and develop the prediction model. Computational experiments on the experimentally verified dataset demonstrate that the proposed method can produce better results than other state-of-the-art methods. More importantly, the method can predict not only the ‘A’ branchpoints but also other types of branchpoints. </p>
+
+<br> 
+
+	 <h4><B>Computational service</B></h4>	
+	 <p align="justify"> We develop the web to predict the branchpoints as well as query the branchpoints by human genes. </P>
+	 
+	 <br> 
+	 	
+	   <h4><B>Paper</B></h4>	
+<p align="justify">	Multi-label learning approaches to the prediction of human splicing branchpoints, <em>submitted to Oxford Bioinformatics</em>. 
+		<B>Co-corresponding authors: Wen Zhang, Zhiping Weng</B></p>
 		<div id="footer"><em>Last updated: Oct. 26, 2015.<br />Wen Zhang (<a href="mailto:zhangwen@whu.edu.cn">zhangwen@whu.edu.cn</a>)</em></div>
 </div>
 </body>

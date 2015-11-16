@@ -18,21 +18,28 @@
 	<title>Query Gene's Branchpoints</title>
 </head>
 <body>
+	
+		<h1 id="title"><font color="black"><I><B>Web for Predicting and Querying Human Branchpoints</B></I></font></h1>
+
+	
 <ul class="nav nav-tabs">
   <li role="presentation" ><a href="home.html">Home</a></li>
   <li role="presentation"><a href="predict.html">Predict</a></li>
   <li role="presentation" class="active"><a href="query.html">Query Gene</a></li>
 </ul>
 
-<h4>QUERY YOUR INTERESTED GENES</h4>
+<h4><B>Query Your Genes</B></h4>
 
 <p>
 		<table>
 			<tr>
 				<td bgcolor="lavender">
-					<font face="courier" size=2>1) input the gene name and query;<br></font>
-					<font face="courier" size=2>2) all introns are retrieved,branchpoints are shown for each introns;<br></font>
-		         	<font face="courier" size=2>3) experimentally verified branchpoints are marked '*', others are predicted scores</font>
+					<font face="courier" size=2>1) Input a gene name to query;<br></font>
+					<font face="courier" size=2>2) All introns for the gene are retrieved;<br></font>
+   					<font face="courier" size=2>3) The branchpoints will be predicted for each intron;<br></font>
+		         	<font face="courier" size=2>4) The height of figure bars means probability of being branchpoint;<br></font>   					
+		         	<font face="courier" size=2>5) Experimentally determined branchpoints marked "*";<br></font>
+		         	<font face="courier" size=2>7) Click "download" button to download prediction scores.</font>
 	
 				</td>
 			</tr>
@@ -48,12 +55,17 @@
 <button ng-click="save()" class="btn-primary">download</button>
 </div>
 <div>
-<label>Intron Number</label>: {{introns.length}} 
+<br></label><label>Intron Number</label>: {{introns.length}} 
 </div>
 <div id="svgs" style="height:100%;overflow-y:scroll">
 	<div ng-repeat="i in introns" id="{{i.id}}" name="{{i.id}}" class="figure">{{i.id}}</div>
+
 </div>
+<div id="footer"><em>Last updated: Oct. 26, 2015.<br />Wen Zhang (<a href="mailto:zhangwen@whu.edu.cn">zhangwen@whu.edu.cn</a>)</em></div>
+
 </div>
+
+
 <script>
 (function($,d3,ng){
 var saveDataAsFile= function(data,filename) {
@@ -249,5 +261,9 @@ var rc = function(seq) {
 }
 }(jQuery,d3,angular))
 </script>
+
+</div>
+
+
 </body>
 </html>
