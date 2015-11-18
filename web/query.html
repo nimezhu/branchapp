@@ -186,7 +186,7 @@ var chart = function(selection) {
 		.attr("width",width-2)
 		.attr("fill",function(d0,i) {return ncolors(d.seq[i+10])})
 		.append("title")
-		.text(function(d0,i){return d.seq[i+10]+":"+(i-50)+":"+d0})
+		.text(function(d0,i){return d.seq[i+10]+":"+(i-50)+":"+(Math.round(d0*100)/100)})
 	d3.select(this).append("text")
 	.attr("x",-30)
 	.attr("y",scale(0)+5)
