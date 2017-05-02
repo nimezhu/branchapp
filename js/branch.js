@@ -97,4 +97,41 @@ var branch = branch || {};
     return chart;
   }
 
+  var h = {
+  	"A":"T",
+  	"a":"t",
+  	"C":"G",
+  	"c":"g",
+  	"G":"C",
+  	"g":"c",
+  	"T":"A",
+  	"t":"a",
+  	"N":"N",
+  	"n":"n"
+  }
+  var rc = function(seq) {
+  	var s=seq.split('')
+  	var r=[];
+  	s.reverse().forEach(function(d) {
+  		r.push(h[d])
+  	})
+  	return r.join('');
+  }
+  B.getseq = function(i,callback) {
+  	$.ajax( {
+  		url:"http://genome.ucsc.edu/cgi-bin/das/hg19/dna?segment="+i.chr+" : "+(i.start+1)+", "+i.end,
+  		dataType:"xml ",
+  		success: function(d) {
+  			var seq=$(d).find("DNA:first ").text().replace(/\s/g,'')
+  			console.log(i);
+  			if(i.strand=="- ") {i.seq=rc(seq)}
+  			else {
+  				i.seq=seq;
+  			}
+  			callback(i);
+  		}
+  	  }
+  	 )
+  	}
+
 })(branch)

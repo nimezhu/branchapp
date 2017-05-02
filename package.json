@@ -4,7 +4,7 @@
   "description": "Branchpoint Prediction.",
   "main": "main.js",
   "repository": "",
-  "author": "Xiaopeng Zhu <nimezhu@gmail.com",
+  "author": "Xiaopeng Zhu <nimezhu@gmail.com>",
   "dependencies": {
     "python-shell": "~0.4.0",
     "node-json-rpc": "~0.0.1",
