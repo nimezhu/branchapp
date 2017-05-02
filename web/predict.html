@@ -1,37 +1,51 @@
 <html>
+
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
- 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    		<script src="http://d3js.org/d3.v3.min.js"></script>		
+	<script>
+		if (typeof module === 'object') {
+			window.module = module;
+			module = undefined;
+		}
+	</script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="http://d3js.org/d3.v3.min.js"></script>
 	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
-<!-- Optional theme -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
+	<script>
+		if (typeof module === 'object') {
+			window.module = module;
+			module = undefined;
+		}
+	</script>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
 
-		<link rel="stylesheet" href="master.css" type="text/css" media="screen" charset="utf-8">
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
-<!--
+	<link rel="stylesheet" href="master.css" type="text/css" media="screen" charset="utf-8">
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+	<!--
 	<script src="lib/angular-ui-bootstrap-modal.js"></script>
 	-->
 	<title>Branchpoints Predict</title>
 </head>
+
 <body>
-	
-		<h1 id="title"><font color="black"><I><B>Web for Predicting and Querying Human Branchpoints</B></I></font></h1>
-	
-<ul class="nav nav-tabs">
-  <li role="presentation" ><a href="home.html">Home</a></li>
-  <li role="presentation" class="active"><a href="predict.html">Predict</a></li>
-  <li role="presentation" ><a href="query.html">Query Gene</a></li>
-</ul>
+
+	<h1 id="title"><font color="black"><I><B>Web for Predicting and Querying Human Branchpoints</B></I></font></h1>
+
+	<ul class="nav nav-tabs">
+		<li role="presentation"><a href="home.html">Home</a></li>
+		<li role="presentation" class="active"><a href="predict.html">Predict</a></li>
+		<li role="presentation"><a href="query.html">Query Gene</a></li>
+	</ul>
 
 
 
-<h4><B>Fasta Sequence Prediction</B></h4>
+	<h4><B>Fasta Sequence Prediction</B></h4>
 
-<p>
+	<p>
 		<table>
 			<tr>
 				<td bgcolor="lavender">
@@ -39,234 +53,271 @@
 					<font face="courier" size=2>2) Not contain characters other than a,c,g,t,A,C,G,T;<br></font>
 					<font face="courier" size=2>3) Sequence should be longer than 55 nt;<br></font>
 					<font face="courier" size=2>4) Prediction for sites between -50 and -11 upstream of intron 3';<br></font>
-		         	<font face="courier" size=2>5) Predicted results are shown by figures; <br></font>
-                  	<font face="courier" size=2>6) Example:press "load demo" button and then press "predict" button;<br></font>
-                	<font face="courier" size=2>7) Click "download" button to download prediction scores</font>
+					<font face="courier" size=2>5) Predicted results are shown by figures; <br></font>
+					<font face="courier" size=2>6) Example:press "load demo" button and then press "predict" button;<br></font>
+					<font face="courier" size=2>7) Click "download" button to download prediction scores</font>
 				</td>
 			</tr>
 		</table>
-</p>
+	</p>
 
-<div style="padding:10px" ng-app="MyApp" ng-controller="MyCtrl" ng-init="">
-<div>
-<!--
+	<div style="padding:10px" ng-app="MyApp" ng-controller="MyCtrl" ng-init="">
+		<div>
+			<!--
 <button ng-click="loadFile()" class="btn-xs">Load File</button> <input type="file" ng-model="file"></input>
 -->
-<button ng-click="openFile()" style="" class="btn-xs">Load File</button>
-<button ng-click="demo()" style="" class="btn-xs">Load Demo</button>
-<button ng-click="clearFaText()" style="" class="btn-xs">Clear</button>
-</div>
-<div modal="showModal" close="cancel()" ng-show="showModal">
-<div class="modal-header"></div>	
-<div class="modal-body">
-	<span>Open File:</span>
-	<input type="file" fileread="file"></input>
-	
-</div>	
-<div class="modal-footer">
-	 <button class="btn btn-success" id="ok" ng-click="ok()">O.K.</button>
-        <button class="btn" ng-click="cancel()">Cancel</button>
-	
-</div>	
-</div>
+			<button ng-click="openFile()" style="" class="btn-xs">Load File</button>
+			<button ng-click="demo()" style="" class="btn-xs">Load Demo</button>
+			<button ng-click="clearFaText()" style="" class="btn-xs">Clear</button>
+		</div>
+		<div modal="showModal" close="cancel()" ng-show="showModal">
+			<div class="modal-header"></div>
+			<div class="modal-body">
+				<span>Open File:</span>
+				<input type="file" fileread="file"></input>
 
-<textArea ng-model="faText" cols=80 rows=15 style="overflow-y:scroll"></textArea>
-<br>
-<button ng-click="predictFaText()" class="btn-primary">Predict</button>
-<button ng-click="save()" class="btn-primary">Download</button>
-<div>
-		<div ng-repeat="i in introns" id="{{i.id}}" name="{{i.id}}">{{i.id}}</div>
-</div>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-success" id="ok" ng-click="ok()">O.K.</button>
+				<button class="btn" ng-click="cancel()">Cancel</button>
 
+			</div>
+		</div>
 
-</div>
+		<textArea ng-model="faText" cols=80 rows=15 style="overflow-y:scroll"></textArea>
+		<br>
+		<button ng-click="predictFaText()" class="btn-primary">Predict</button>
+		<button ng-click="save()" class="btn-primary">Download</button>
+		<div>
+			<div ng-repeat="i in introns" id="{{i.id}}" name="{{i.id}}">{{i.id}}</div>
+		</div>
 
 
-<script>
-(function($,d3,ng){
-var saveDataAsFile= function(data,filename) {
-	var dataToWrite = JSON.stringify(data);
-	var dataFileAsBlob = new Blob([dataToWrite], {type:'text/json'});
-	var fileNameToSaveAs = filename; 
-	var downloadLink = document.createElement("a");
-	downloadLink.download = fileNameToSaveAs;
-	downloadLink.innerHTML = "Download File";
-	if (window.webkitURL != null)
-	{
-		downloadLink.href = window.webkitURL.createObjectURL(dataFileAsBlob);
-	}
-	else
-	{
-		downloadLink.href = window.URL.createObjectURL(dataFileAsBlob);
-		downloadLink.onclick = destroyClickedElement;
-		downloadLink.style.display = "none";
-		document.body.appendChild(downloadLink);
-
-	}
-	downloadLink.click();
-}
+	</div>
 
 
-var app=ng.module("MyApp",[]);
-app.directive("fileread", [function () {
-    return {
-        scope: {
-            fileread: "=" 
-        },  
-        link: function (scope, element, attributes) {
-            element.bind("change", function (changeEvent) {
-                scope.$apply(function () {
-                    scope.fileread = changeEvent.target.files[0];
-                }); 
-            }); 
-        }   
-    }   
-}]);
-app.controller("MyCtrl",function($scope){
-$scope.showModal=false;
-$scope.openFile = function() {
-	$scope.showModal=true;
-}	
-$scope.ok = function() {
-	var ft=$scope.file;
-	var reader = new FileReader();
-	reader.readAsText(ft);
-	reader.onload = function(e) {
-		$scope.faText=reader.result;
-		$scope.$apply();
-	}
-	$scope.showModal=false;
-}
-$scope.cancel = function() {
-     $scope.showModal = false;
-}
+	<script>
+		(function($, d3, ng) {
+			var saveDataAsFile = function(data, filename) {
+				var dataToWrite = JSON.stringify(data);
+				var dataFileAsBlob = new Blob([dataToWrite], {
+					type: 'text/json'
+				});
+				var fileNameToSaveAs = filename;
+				var downloadLink = document.createElement("a");
+				downloadLink.download = fileNameToSaveAs;
+				downloadLink.innerHTML = "Download File";
+				if (window.webkitURL != null) {
+					downloadLink.href = window.webkitURL.createObjectURL(dataFileAsBlob);
+				} else {
+					downloadLink.href = window.URL.createObjectURL(dataFileAsBlob);
+					downloadLink.onclick = destroyClickedElement;
+					downloadLink.style.display = "none";
+					document.body.appendChild(downloadLink);
 
-$scope.clearFaText = function() {
-	$scope.faText=""
-}
-$scope.demo =function() {
-	$scope.faText=">intron1\nTATGGAGGACTTGGGCATATTTGGCCAATGTAACACATTTTTATGGTGATTGTTTTCTAG\n>intron2\nCTGTATTTAAGTCTCCGGGGGCTGGGGGAATCAGGGTTTCCCACCAACCACCCTCACTCAGCCTTTTCCCTCCAG"
-}
-$scope.predictFaText = function() {
-   var seqs=parseFa($scope.faText)
-   console.log(seqs)
-   $scope.introns=seqs;
-   $scope.introns.forEach(function(d){
-   	 predict(d);
-   })
-}
-$scope.save=function() {
-	saveDataAsFile($scope.introns,"branchpoints.json")
-}
-var predict=function(i) {
-	$.ajax(
-		{ url:"/predict",
-		  data: {"seq":i.seq.toUpperCase()},
-		  dataType: "json",
-		  type: "GET",
-		  success: function(d) {
-			i.result=d.result;
-			$scope.$apply();
-			render(i);
-		  }
-		}
-		)
-}
-})
-/* FIGURE SECTION */
-var ncolor = { "A":4,"a":4,"C":1,"c":1,"G":2,"g":2,"T":3,"t":3}
-var color = d3.scale.category10().domain([1,2,3,4,5,6,7,8,9,0]);
-var ncolors = function(n) {
-	if (ncolor[n]) {
-	return color(ncolor[n]);
-	} else {
-	return "grey";
-	}
-}
-var barchart = function() {
-var height=200;
-var width=10;
-var chart = function(selection) {
-	selection.each(function(d,i){
-	if(!d.result) {return}
-	var scale=d3.scale.linear().range([height,0]);
-	var minY=d3.min(d.result)
-	var maxY=d3.max(d.result)
-	scale.domain([minY,maxY])
-	if(d.v) {
-	d3.select(this).selectAll(".v").data(d.v).enter().append("text")
-	.attr("class","v")
-	.attr("x",function(d) { return (d[0]-10)*width})
-	.attr("y",function(d1) { var e=d.result[d1[0]-10]
-	if(e>0) { return scale(e) }
-	else { return scale(e)+10 }
-	})
-	//.attr("y",20)
-	.text("*")
-	}
-	d3.select(this).selectAll("rect").data(d.result).enter()
-		.append("rect")
-		.attr("x",function(d,i){return i*width})
-		.attr("y",function(d,i){return scale(Math.max(0,d))})
-		.attr("height",function(d,i){return Math.abs(scale(d)-scale(0))})
-		.attr("width",width-2)
-		.attr("fill",function(d0,i) {return ncolors(d.seq[i+5])})
-		.append("title")
-		.text(function(d0,i){return d.seq[i+5]+":"+(i-50)+":"+(Math.round(d0*100)/100)})
-	d3.select(this).append("text")
-	.attr("x",-30)
-	.attr("y",scale(0)+5)
-	.text("-50")	
-	d3.select(this).append("text")
-	.attr("x",40*width)
-	.attr("y",scale(0)+5)
-	.text("-11")
-	 var yAxis = d3.svg.axis()
-                  .scale(scale)
-		.orient("right")
-			;
-	var yG = d3.select(this).append("g").attr("transform","translate("+(40*width+30)+")")
-                              .call(yAxis);
-	var l = d3.select(this).append("g").attr("transform","translate("+40*width+",20)")
-		.selectAll("g").data(["A","C","G","T"]).enter()
-		.append("g").attr("transform",function(d,i){return "translate(5,"+i*20+")"})
-		.append("text")
-		.text(function(d,i){return d})
-		.attr("fill",function(d,i){return ncolors(d)})
+				}
+				downloadLink.click();
+			}
 
-	}
-	);	
-    }
-return chart;
-}
 
-function render(i) {
-		var barplot=barchart();	
-		console.log(i);
-		var svg=d3.select('#'+i.id).datum(i).append("svg").attr("height","250px").attr("width","800px");
-		svg.append("g").attr("transform","translate(40,20)").call(barplot);
-	}
+			var app = ng.module("MyApp", []);
+			app.directive("fileread", [function() {
+				return {
+					scope: {
+						fileread: "="
+					},
+					link: function(scope, element, attributes) {
+						element.bind("change", function(changeEvent) {
+							scope.$apply(function() {
+								scope.fileread = changeEvent.target.files[0];
+							});
+						});
+					}
+				}
+			}]);
+			app.controller("MyCtrl", function($scope) {
+				$scope.showModal = false;
+				$scope.openFile = function() {
+					$scope.showModal = true;
+				}
+				$scope.ok = function() {
+					var ft = $scope.file;
+					var reader = new FileReader();
+					reader.readAsText(ft);
+					reader.onload = function(e) {
+						$scope.faText = reader.result;
+						$scope.$apply();
+					}
+					$scope.showModal = false;
+				}
+				$scope.cancel = function() {
+					$scope.showModal = false;
+				}
 
-function parseFa(txt) {
-	var s=txt.split(">")
-	if(s.length==0) {return []}
-	s.shift();
-	var retv=[];
-	s.forEach(function(d){
-		var lines=d.split("\n");
-		var name=lines.shift();
-		var seq=lines.join("")
-		var l=seq.length
-		retv.push({"id":name,"seq":seq.slice(l-55,l)})
-	})
-	return retv;
-}
+				$scope.clearFaText = function() {
+					$scope.faText = ""
+				}
+				$scope.demo = function() {
+					$scope.faText = ">intron1\nTATGGAGGACTTGGGCATATTTGGCCAATGTAACACATTTTTATGGTGATTGTTTTCTAG\n>intron2\nCTGTATTTAAGTCTCCGGGGGCTGGGGGAATCAGGGTTTCCCACCAACCACCCTCACTCAGCCTTTTCCCTCCAG"
+				}
+				$scope.predictFaText = function() {
+					var seqs = parseFa($scope.faText)
+					console.log(seqs)
+					$scope.introns = seqs;
+					$scope.introns.forEach(function(d) {
+						predict(d);
+					})
+				}
+				$scope.save = function() {
+					saveDataAsFile($scope.introns, "branchpoints.json")
+				}
+				var predict = function(i) {
+					$.ajax({
+						url: "/predict",
+						data: {
+							"seq": i.seq.toUpperCase()
+						},
+						dataType: "json",
+						type: "GET",
+						success: function(d) {
+							i.result = d.result;
+							$scope.$apply();
+							render(i);
+						}
+					})
+				}
+			})
+			/* FIGURE SECTION */
+			var ncolor = {
+				"A": 4,
+				"a": 4,
+				"C": 1,
+				"c": 1,
+				"G": 2,
+				"g": 2,
+				"T": 3,
+				"t": 3
+			}
+			var color = d3.scale.category10().domain([1, 2, 3, 4, 5, 6, 7, 8, 9, 0]);
+			var ncolors = function(n) {
+				if (ncolor[n]) {
+					return color(ncolor[n]);
+				} else {
+					return "grey";
+				}
+			}
+			var barchart = function() {
+				var height = 200;
+				var width = 10;
+				var chart = function(selection) {
+					selection.each(function(d, i) {
+						if (!d.result) {
+							return
+						}
+						var scale = d3.scale.linear().range([height, 0]);
+						var minY = d3.min(d.result)
+						var maxY = d3.max(d.result)
+						scale.domain([minY, maxY])
+						if (d.v) {
+							d3.select(this).selectAll(".v").data(d.v).enter().append("text")
+								.attr("class", "v")
+								.attr("x", function(d) {
+									return (d[0] - 10) * width
+								})
+								.attr("y", function(d1) {
+									var e = d.result[d1[0] - 10]
+									if (e > 0) {
+										return scale(e)
+									} else {
+										return scale(e) + 10
+									}
+								})
+								//.attr("y",20)
+								.text("*")
+						}
+						d3.select(this).selectAll("rect").data(d.result).enter()
+							.append("rect")
+							.attr("x", function(d, i) {
+								return i * width
+							})
+							.attr("y", function(d, i) {
+								return scale(Math.max(0, d))
+							})
+							.attr("height", function(d, i) {
+								return Math.abs(scale(d) - scale(0))
+							})
+							.attr("width", width - 2)
+							.attr("fill", function(d0, i) {
+								return ncolors(d.seq[i + 5])
+							})
+							.append("title")
+							.text(function(d0, i) {
+								return d.seq[i + 5] + ":" + (i - 50) + ":" + (Math.round(d0 * 100) / 100)
+							})
+						d3.select(this).append("text")
+							.attr("x", -30)
+							.attr("y", scale(0) + 5)
+							.text("-50")
+						d3.select(this).append("text")
+							.attr("x", 40 * width)
+							.attr("y", scale(0) + 5)
+							.text("-11")
+						var yAxis = d3.svg.axis()
+							.scale(scale)
+							.orient("right");
+						var yG = d3.select(this).append("g").attr("transform", "translate(" + (40 * width + 30) + ")")
+							.call(yAxis);
+						var l = d3.select(this).append("g").attr("transform", "translate(" + 40 * width + ",20)")
+							.selectAll("g").data(["A", "C", "G", "T"]).enter()
+							.append("g").attr("transform", function(d, i) {
+								return "translate(5," + i * 20 + ")"
+							})
+							.append("text")
+							.text(function(d, i) {
+								return d
+							})
+							.attr("fill", function(d, i) {
+								return ncolors(d)
+							})
 
-}(jQuery,d3,angular))
-</script>
+					});
+				}
+				return chart;
+			}
+
+			function render(i) {
+				var barplot = barchart();
+				console.log(i);
+				var svg = d3.select('#' + i.id).datum(i).append("svg").attr("height", "250px").attr("width", "800px");
+				svg.append("g").attr("transform", "translate(40,20)").call(barplot);
+			}
+
+			function parseFa(txt) {
+				var s = txt.split(">")
+				if (s.length == 0) {
+					return []
+				}
+				s.shift();
+				var retv = [];
+				s.forEach(function(d) {
+					var lines = d.split("\n");
+					var name = lines.shift();
+					var seq = lines.join("")
+					var l = seq.length
+					retv.push({
+						"id": name,
+						"seq": seq.slice(l - 55, l)
+					})
+				})
+				return retv;
+			}
+
+		}(jQuery, d3, angular))
+	</script>
 
 	<div id="footer"><em>Last updated: Oct. 26, 2015.<br />Wen Zhang (<a href="mailto:zhangwen@whu.edu.cn">zhangwen@whu.edu.cn</a>)</em></div>
-</div>
+	</div>
 
 </body>
+
 </html>

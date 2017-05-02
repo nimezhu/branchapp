@@ -1,0 +1,99 @@
+<html>
+
+<head>
+    <title>Photon</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../css/photon.min.css">
+
+    <!-- Javascript -->
+    <script src="js/menu.js" charset="utf-8"></script>
+</head>
+
+<body>
+    <div class="window">
+        <header class="toolbar toolbar-header">
+            <h1 class="title">Branch Predict</h1>
+        </header>
+        <div class="window-content">
+            <div class="pane-group">
+                <div class="pane pane-sm sidebar">
+                    <input type="button" value="list" onclick="listgenes()">
+                    </input>
+                    <input type="button" value="predict" onclick="predict('CTGTATTTAAGTCTCCGGGGGCTGGGGGAATCAGGGTTTCCCACCAACCACCCTCACTCAGCCTTTTCCCTCCAG')">
+                    </input>
+                    <input type="button" value="introns" onclick="introns('STAT1')">
+
+                    </input>
+                </div>
+                <div class="pane">
+                </div>
+            </div>
+        </div>
+        <footer class="toolbar toolbar-footer">
+            <h1 class="title">Footer</h1>
+        </footer>
+    </div>
+
+</body>
+<script>
+    var rpc = require('node-json-rpc');
+    var options = {
+        port: 7000,
+        host: '127.0.0.1',
+        path: '/',
+        strict: true
+    };
+    var client = new rpc.Client(options);
+    console.log(client)
+
+    function listgenes() {
+        client.call({
+                "jsonrpc": "2.0",
+                "method": "list",
+                "params": [],
+                "id": "listgene"
+            },
+            function(err, res2) {
+                if (err) {
+                    console.log("error", err);
+                } else {
+                    console.log(res2)
+                }
+            });
+    }
+
+    function predict(d) {
+        client.call({
+            "jsonrpc": "2.0",
+            "method": "branch",
+            "params": [d],
+            "id": "predict"
+
+        }, function(err, res2) {
+            if (err) {
+                console.log("error", err)
+            } else {
+                console.log(res2)
+            }
+        })
+    }
+
+    function introns(d) {
+        client.call({
+            "jsonrpc": "2.0",
+            "method": "introns",
+            "params": [d],
+            "id": "introns"
+
+        }, function(err, res2) {
+            if (err) {
+                console.log("error", err)
+            } else {
+                console.log(res2)
+            }
+        })
+    }
+</script>
+
+</html>
