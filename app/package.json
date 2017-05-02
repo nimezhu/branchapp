@@ -6,8 +6,9 @@
   "repository": "",
   "author": "Xiaopeng Zhu <nimezhu@gmail.com",
   "dependencies": {
-    "async": "~0.2.8",
-    "express": "~3.2.4",
-    "socket.io": "~0.9.14"
+    "python-shell": "~0.4.0",
+    "node-json-rpc": "~0.0.1",
+    "d3":"~4.0.0"
+
   }
 }
