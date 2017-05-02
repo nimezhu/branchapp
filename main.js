@@ -1,25 +1,32 @@
 let pyProc = null
+let pyPort = null
 
+const selectPort = () => {
+  pyPort = 4242
+  return pyPort
+}
 
 var PythonShell = require("python-shell")
 
 const createPyProc = () => {
-  PythonShell.run("jsonrpc.py",{
-     scriptPath: '../jsonrpc/'
-  },function(err,results){
-    console.log(err,results)
-  })
-  /*
-  PythonShell.on('message', function (message) {
-  // received a message sent from the Python script (a simple "print" statement)
-  console.log(message);
-});
-*/
+  let port = '' + selectPort()
+  let script = path.join(__dirname, 'jsonrpc', 'jsonrpc.py')
+  console.log(script)
+  pyProc = require('child_process').spawn('python', [script])
+  if (pyProc != null) {
+    console.log('child process success')
+    //console.log(pyProc)
+    pyProc.stdout.on('data',function(data){
+        
+    });
+  }
 
 }
 
-const exitPyProc = () => {
 
+const exitPyProc = () => {
+  pyProc.kill()
+  pyProc = null
   pyProc = null
 }
 
@@ -49,7 +56,9 @@ function createWindow () {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
+    console.log("close main window")
     win = null
+    app.quit()
   })
 }
 // This method will be called when Electron has finished

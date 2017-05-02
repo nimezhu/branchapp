@@ -9,14 +9,14 @@ from bam2x.Struct import binindex
 from bam2x.DBI.Templates import select_template as template
 from bam2x.DBI.Templates import factories
 from bam2x import TableIO,Tools
-conn = sqlite3.connect("../jsonrpc/data/hg19_one_tr_per_gene.bed.db")
+conn = sqlite3.connect("./jsonrpc/data/hg19_one_tr_per_gene.bed.db")
 conn.row_factory=factories["bed12"]
 cursor=conn.cursor()
 s = "select * from gene"
 cursor.execute(s)
 r=cursor.fetchall()
 h={}
-DataS3=binindex(TableIO.parse("../jsonrpc/data/DataS3.uniq.bed.gz","bed6"))
+DataS3=binindex(TableIO.parse("./jsonrpc/data/DataS3.uniq.bed.gz","bed6"))
 genelist=[i.id for i in r]
 print(genelist)
 for i in r:
