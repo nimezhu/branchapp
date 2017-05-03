@@ -57,7 +57,14 @@
 <script>
     (function(B) {
         ipcRenderer.on("info", function(event,data){
-          console.log(data)
+          console.log("open",data)
+          data.files.forEach(function(fn){
+            fs.readFile(fn,{"encoding":"utf-8"},function(err,d){
+              if(!err) {
+                console.log('file content',d)
+              }
+            })
+          })
         })
         d3.select("#introns").on("click", function() {
             introns("STAT1", render)
