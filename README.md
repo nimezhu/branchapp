@@ -1,6 +1,6 @@
 
-cd branchapp
-electron ./
+- cd branchapp
+- electron ./
 
 
 python dependencies:
