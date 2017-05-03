@@ -1,3 +1,9 @@
-JSONRPC SERVER: python jsonrpc.py
 
-WEBSERVER: node simple.js
+cd branchapp
+electron ./
+
+
+python dependencies:
+bam2x
+biopython
+...
