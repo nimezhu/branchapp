@@ -34,17 +34,15 @@
         <div class="window-content">
             <div class="pane-group">
                 <div class="pane pane-sm sidebar">
-                    <input type="button" value="list" onclick="listgenes()">
+                    <input type="button" value="list" id="list">
                     </input>
-                    <input type="button" value="predict" onclick="predict('CTGTATTTAAGTCTCCGGGGGCTGGGGGAATCAGGGTTTCCCACCAACCACCCTCACTCAGCCTTTTCCCTCCAG')">
+                    <input type="button" value="predict" id="predict">
                     </input>
-                    <input type="button" value="introns" onclick="introns('STAT1')">
-
+                    <input type="button" value="introns" id="introns">
                     </input>
                 </div>
-                <div class="pane">
-                    <svg style="height:500px;width:700px">
-                </svg>
+                <div class="pane" id="canvas">
+
                 </div>
             </div>
         </div>
@@ -55,73 +53,91 @@
 
 </body>
 <script>
-    var options = {
-        port: 7000,
-        host: '127.0.0.1',
-        path: '/',
-        strict: true
-    };
-    var client = new rpc.Client(options);
-    console.log(client)
+    (function(B) {
+        d3.select("#introns").on("click", function() {
+            introns("STAT1", render)
+        })
+        d3.select("#predict").on("click", function() {
+            predict('CTGTATTTAAGTCTCCGGGGGCTGGGGGAATCAGGGTTTCCCACCAACCACCCTCACTCAGCCTTTTCCCTCCAG')
+        })
+        d3.select("#list").on("click", function() {
+            listgenes()
+        })
+        var options = {
+            port: 7000,
+            host: '127.0.0.1',
+            path: '/',
+            strict: true
+        };
+        var client = new rpc.Client(options);
+        console.log(client)
 
-    function listgenes() {
-        client.call({
+        function listgenes() {
+            client.call({
+                    "jsonrpc": "2.0",
+                    "method": "list",
+                    "params": [],
+                    "id": "listgene"
+                },
+                function(err, res2) {
+                    if (err) {
+                        console.log("error", err);
+                    } else {
+                        console.log(res2)
+                    }
+                });
+        }
+        var chart = B.chart();
+
+        function predict(d) {
+            client.call({
                 "jsonrpc": "2.0",
-                "method": "list",
-                "params": [],
-                "id": "listgene"
-            },
-            function(err, res2) {
+                "method": "branch",
+                "params": [d],
+                "id": "predict"
+
+            }, function(err, res2) {
+                var canvas = d3.select("#canvas")
                 if (err) {
-                    console.log("error", err);
+                    console.log("error", err)
                 } else {
-                    console.log(res2)
+                    res2.seq = d;
+                    var div = canvas.append("div");
+                    var svg = div.append("svg").style("height", "240px").style("width", "700px")
+                    svg.append("g").datum(res2).attr("transform", "translate(40,20)").call(chart);
                 }
-            });
-    }
-    var chart = branch.chart();
+            })
+        }
 
-    function predict(d) {
-        client.call({
-            "jsonrpc": "2.0",
-            "method": "branch",
-            "params": [d],
-            "id": "predict"
+        function introns(d, callback) {
+            client.call({
+                "jsonrpc": "2.0",
+                "method": "introns",
+                "params": [d],
+                "id": "introns"
 
-        }, function(err, res2) {
-            if (err) {
-                console.log("error", err)
-            } else {
-                res2.seq = d;
-                console.log("predict result", res2)
-                d3.select("svg").append("g").datum(res2).attr("transform", "translate(40,20)").call(chart);
+            }, function(err, res2) {
+                if (err) {
+                    console.log("error", err)
+                } else {
+                    callback(res2)
+                }
+            })
+        }
 
-            }
-        })
-    }
-
-    function introns(d) {
-        client.call({
-            "jsonrpc": "2.0",
-            "method": "introns",
-            "params": [d],
-            "id": "introns"
-
-        }, function(err, res2) {
-            if (err) {
-                console.log("error", err)
-            } else {
-                console.log(res2)
-                res2.result.forEach(function(d) {
-                    branch.getseq(d, function(d0) {
-                        d0.seq = d0.seq.toUpperCase()
-                        predict(d0.seq.toUpperCase())
-                    })
+        function render(res) {
+            d3.select("#canvas").selectAll("*").remove()
+            console.log(res)
+            var res2 = []
+            res.result.forEach(function(d, i) {
+                B.getseq(d, function(d0) {
+                    d0.seq = d0.seq.toUpperCase();
+                    //console.log("callback", d0)
+                    predict(d0.seq)
                 })
-
-            }
-        })
-    }
+            })
+        }
+    })(branch)
 </script>
 
 </html>

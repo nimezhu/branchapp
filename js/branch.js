@@ -123,9 +123,6 @@ var branch = branch || {};
   		dataType:"xml",
   		success: function(d) {
   			var seq=$(d).find("DNA:first").text().replace(/\s/g,'')
-        console.log("xml",d)
-        console.log("seq in",seq);
-        console.log("i in",i)
   			if(i.strand=="-") {i.seq=rc(seq)}
   			else {
   				i.seq=seq;
