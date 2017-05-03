@@ -8,9 +8,20 @@
 
     <!-- Javascript -->
     <script>
-    var rpc = require('node-json-rpc');
-    var d3 = require('d3');
+        if (typeof module === 'object') {
+            window.module = module;
+            module = undefined;
+        }
     </script>
+    <script>
+        var rpc = require('node-json-rpc');
+        var d3 = require('d3');
+        var $ = jquery = require('jquery')
+    </script>
+    <script>
+        if (window.module) module = window.module;
+    </script>
+
     <script src="js/menu.js" charset="utf-8"></script>
     <script src="js/branch.js" charset="utf-8"></script>
 </head>
@@ -32,7 +43,7 @@
                     </input>
                 </div>
                 <div class="pane">
-                <svg style="height:500px;width:700px">
+                    <svg style="height:500px;width:700px">
                 </svg>
                 </div>
             </div>
@@ -44,7 +55,6 @@
 
 </body>
 <script>
-
     var options = {
         port: 7000,
         host: '127.0.0.1',
@@ -70,6 +80,7 @@
             });
     }
     var chart = branch.chart();
+
     function predict(d) {
         client.call({
             "jsonrpc": "2.0",
@@ -82,7 +93,7 @@
                 console.log("error", err)
             } else {
                 res2.seq = d;
-                console.log(res2)
+                console.log("predict result", res2)
                 d3.select("svg").append("g").datum(res2).attr("transform", "translate(40,20)").call(chart);
 
             }
@@ -101,6 +112,13 @@
                 console.log("error", err)
             } else {
                 console.log(res2)
+                res2.result.forEach(function(d) {
+                    branch.getseq(d, function(d0) {
+                        d0.seq = d0.seq.toUpperCase()
+                        predict(d0.seq.toUpperCase())
+                    })
+                })
+
             }
         })
     }

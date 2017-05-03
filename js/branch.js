@@ -119,12 +119,14 @@ var branch = branch || {};
   }
   B.getseq = function(i,callback) {
   	$.ajax( {
-  		url:"http://genome.ucsc.edu/cgi-bin/das/hg19/dna?segment="+i.chr+" : "+(i.start+1)+", "+i.end,
-  		dataType:"xml ",
+  		url:"http://genome.ucsc.edu/cgi-bin/das/hg19/dna?segment="+i.chr+":"+(i.start+1)+","+i.end,
+  		dataType:"xml",
   		success: function(d) {
-  			var seq=$(d).find("DNA:first ").text().replace(/\s/g,'')
-  			console.log(i);
-  			if(i.strand=="- ") {i.seq=rc(seq)}
+  			var seq=$(d).find("DNA:first").text().replace(/\s/g,'')
+        console.log("xml",d)
+        console.log("seq in",seq);
+        console.log("i in",i)
+  			if(i.strand=="-") {i.seq=rc(seq)}
   			else {
   				i.seq=seq;
   			}

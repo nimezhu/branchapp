@@ -6,9 +6,8 @@
   "repository": "",
   "author": "Xiaopeng Zhu <nimezhu@gmail.com>",
   "dependencies": {
-    "python-shell": "~0.4.0",
-    "node-json-rpc": "~0.0.1",
-    "d3":"~4.0.0"
-
+    "d3": "~4.0.0",
+    "jquery": "~2.1.0",
+    "node-json-rpc": "~0.0.1"
   }
 }
