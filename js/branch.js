@@ -19,6 +19,7 @@ var branch = branch || {};
     }
   }
     B.chart = function() {
+    var offset = 5;
     var height = 200;
     var width = 10;
     var chart = function(selection) {
@@ -30,7 +31,9 @@ var branch = branch || {};
         var minY = d3.min(d.result)
         var maxY = d3.max(d.result)
         scale.domain([minY, maxY])
+        //console.log(d)
         if (d.v) {
+          console.log("d.v",d.v)
           d3.select(this).selectAll(".v").data(d.v).enter().append("text")
             .attr("class", "v")
             .attr("x", function(d) {
@@ -60,11 +63,12 @@ var branch = branch || {};
           })
           .attr("width", width - 2)
           .attr("fill", function(d0, i) {
-            return ncolors(d.seq[i + 5])
+            return ncolors(d.seq[i + offset])
           })
           .append("title")
           .text(function(d0, i) {
-            return d.seq[i + 5] + ":" + (i - 50) + ":" + (Math.round(d0 * 100) / 100)
+            //return d.seq[i + 5] + ":" + (i - 50) + ":" + (Math.round(d0 * 100) / 100)
+            return d.seq[i + offset] + ":" + (i - 50) + ":" + (Math.round(d0 * 100) / 100)
           })
         d3.select(this).append("text")
           .attr("x", -30)
@@ -94,6 +98,7 @@ var branch = branch || {};
 
       });
     }
+    chart.offset = function(_) { return arguments.length ? (offset= _, chart) : offset; }
     return chart;
   }
 
@@ -117,6 +122,26 @@ var branch = branch || {};
   	})
   	return r.join('');
   }
+  B.parseFa = function(txt) {
+    var s = txt.split(">")
+    if (s.length == 0) {
+      return []
+    }
+    s.shift();
+    var retv = [];
+    s.forEach(function(d) {
+      var lines = d.split("\n");
+      var name = lines.shift();
+      var seq = lines.join("")
+      var l = seq.length
+      retv.push({
+        "id": name,
+        "seq": seq.slice(l - 55, l)
+      })
+    })
+    return retv;
+  }
+
   B.getseq = function(i,callback) {
   	$.ajax( {
   		url:"http://genome.ucsc.edu/cgi-bin/das/hg19/dna?segment="+i.chr+":"+(i.start+1)+","+i.end,

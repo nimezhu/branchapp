@@ -5,6 +5,7 @@
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="css/photon.min.css">
+    <link rel="stylesheet" href="css/autocomplete.css">
 
     <!-- Javascript -->
     <script>
@@ -16,13 +17,16 @@
     <script>
         var rpc = require('node-json-rpc');
         var d3 = require('d3');
-        var $ = jquery = require('jquery')
+        var $ = jquery = jQuery = require('jquery')
         var fs = require('fs')
-        const {ipcRenderer} = require('electron')
+        const {
+            ipcRenderer
+        } = require('electron')
     </script>
     <script>
         if (window.module) module = window.module;
     </script>
+    <script src="js/jquery-ui.js"></script>
 
     <script src="js/menu.js" charset="utf-8"></script>
     <script src="js/branch.js" charset="utf-8"></script>
@@ -36,12 +40,39 @@
         <div class="window-content">
             <div class="pane-group">
                 <div class="pane pane-sm sidebar">
-                    <input type="button" value="list" id="list">
-                    </input>
-                    <input type="button" value="predict" id="predict">
-                    </input>
-                    <input type="button" value="introns" id="introns">
-                    </input>
+                    <div class="tab-group">
+                        <div class="tab-item active" id="geneTab">
+                            Gene Name
+                        </div>
+                        <div class="tab-item" id="seqTab">
+                           FASTA Seq
+                        </div>
+
+                    </div>
+                    <div id="geneInput">
+                    <div style="padding:5px">
+                        <label>
+                      Gene Name :
+                    </label>
+                        <input type="text" id="gene">
+                        </input>
+                    </div>
+                    </div>
+                    <div id="seqInput">
+                    <div style="padding:5px">
+                        <label>
+                      FASTA:
+                    </label>
+                        	<textArea id="faText" cols=20 rows=15 style="overflow-y:scroll"></textArea>
+                    </div>
+                    <input type="button" id="submitFa" value="submit"></input>
+                    <input type="button" id="demoFa" value="load demo"></input>
+                    </div>
+                    <hr>
+                    <div style="padding:5px">
+                        <input type="button" value="clear" id="clear">
+                        </input>
+                    </div>
                 </div>
                 <div class="pane" id="canvas">
 
@@ -49,32 +80,69 @@
             </div>
         </div>
         <footer class="toolbar toolbar-footer">
-            <h1 class="title">Footer</h1>
+            <h1 class="title">BioinfoTech</h1>
         </footer>
     </div>
 
 </body>
 <script>
     (function(B) {
-        ipcRenderer.on("info", function(event,data){
-          console.log("open",data)
-          data.files.forEach(function(fn){
-            fs.readFile(fn,{"encoding":"utf-8"},function(err,d){
-              if(!err) {
-                console.log('file content',d)
-              }
-            })
-          })
+        $("#seqInput").hide();
+        $("#geneTab").on("click",function(){
+          $("#geneInput").show();
+          $("#seqInput").hide();
         })
+        $("#seqTab").on("click",function(){
+          $("#geneInput").hide();
+          $("#seqInput").show();
+        })
+        ipcRenderer.on("info", function(event, data) {
+            if (data.files) {
+                chart.offset(5)
+                data.files.forEach(function(fn) {
+                    fs.readFile(fn, {
+                        "encoding": "utf-8"
+                    }, function(err, d) {
+                        if (!err) {
+                            console.log('file content', d)
+                            var seqs = B.parseFa(d)
+                            console.log(seqs)
+                            renderSeqs(seqs)
+                        }
+                    })
+                })
+            }
+
+            if (data.code == "about") {
+                $("#canvas").html(
+                    "BranchPoint Prediction v1.0" //TODO
+                )
+            }
+        })
+        d3.select("#clear").on("click", function() {
+            d3.select("#canvas").selectAll("*").remove();
+            $("#gene").val("")
+            $("#faText").val("")
+        })
+        $("#submitFa").on("click",function(){
+            var seqs = B.parseFa($("#faText").val());
+            renderSeqs(seqs)
+
+        })
+        var demo = ">intron1\nTATGGAGGACTTGGGCATATTTGGCCAATGTAACACATTTTTATGGTGATTGTTTTCTAG\n>intron2\nCTGTATTTAAGTCTCCGGGGGCTGGGGGAATCAGGGTTTCCCACCAACCACCCTCACTCAGCCTTTTCCCTCCAG"
+        $("#demoFa").on("click",function(){
+            $("#faText").val(demo);
+            var seqs = B.parseFa($("#faText").val());
+            renderSeqs(seqs)
+        })
+        /*
         d3.select("#introns").on("click", function() {
             introns("STAT1", render)
         })
-        d3.select("#predict").on("click", function() {
-            predict('CTGTATTTAAGTCTCCGGGGGCTGGGGGAATCAGGGTTTCCCACCAACCACCCTCACTCAGCCTTTTCCCTCCAG')
-        })
-        d3.select("#list").on("click", function() {
-            listgenes()
-        })
+        */
+        var genes
+        var gene;
+
         var options = {
             port: 7000,
             host: '127.0.0.1',
@@ -84,7 +152,7 @@
         var client = new rpc.Client(options);
         console.log(client)
 
-        function listgenes() {
+        function listgenes(callback) {
             client.call({
                     "jsonrpc": "2.0",
                     "method": "list",
@@ -96,16 +164,35 @@
                         console.log("error", err);
                     } else {
                         console.log(res2)
+                        callback(res2)
                     }
                 });
         }
-        var chart = B.chart();
+        setTimeout(function() {
+            listgenes(function(d) {
+                genes = d.result;
+                var limit = 8;
+                $("#gene").autocomplete({
+                    source: function(req, res) {
+                        var results = $.ui.autocomplete.filter(genes, req.term);
+                        res(results.slice(0, limit));
+                    },
+                    select: function(event, ui) {
+                        gene = ui.item.label
+                        introns(gene, render)
+                    }
+                });
+            })
+        }, 2000)
+
+        var chart = B.chart().offset(5);
+
 
         function predict(d) {
             client.call({
                 "jsonrpc": "2.0",
                 "method": "branch",
-                "params": [d],
+                "params": [d.seq],
                 "id": "predict"
 
             }, function(err, res2) {
@@ -113,15 +200,18 @@
                 if (err) {
                     console.log("error", err)
                 } else {
-                    res2.seq = d;
+                    res2.seq = d.seq;
+                    res2.id = d.id;
                     var div = canvas.append("div");
-                    var svg = div.append("svg").style("height", "240px").style("width", "700px")
+                    var header = div.append("div").append("h6").text(res2.id)
+                    var svg = div.append("svg").style("height", "280px").style("width", "700px")
                     svg.append("g").datum(res2).attr("transform", "translate(40,20)").call(chart);
                 }
             })
         }
 
         function introns(d, callback) {
+            chart.offset(10)
             client.call({
                 "jsonrpc": "2.0",
                 "method": "introns",
@@ -132,20 +222,30 @@
                 if (err) {
                     console.log("error", err)
                 } else {
-                    callback(res2)
+                    callback(res2.result)
                 }
             })
+        }
+
+        function renderSeqs(seqs) {
+            var k = chart.offset();
+            chart.offset(5)
+            d3.select("#canvas").selectAll("*").remove()
+            seqs.forEach(function(d, i) {
+                predict(d)
+            })
+            chart.offset(k)
         }
 
         function render(res) {
             d3.select("#canvas").selectAll("*").remove()
             console.log(res)
             var res2 = []
-            res.result.forEach(function(d, i) {
+            res.forEach(function(d, i) {
                 B.getseq(d, function(d0) {
                     d0.seq = d0.seq.toUpperCase();
                     //console.log("callback", d0)
-                    predict(d0.seq)
+                    predict(d0)
                 })
             })
         }

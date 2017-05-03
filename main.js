@@ -39,7 +39,7 @@ const url = require('url')
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
-let dispatch = d3.dispatch("open")
+let dispatch = d3.dispatch("open","about")
 let showOpen = function() {
 		dialog.showOpenDialog({ properties: [ 'openFile'], filters: [{ extensions: ['txt'] }]},function(d){
               console.log(d)
@@ -58,6 +58,7 @@ function createWindow () {
               label: 'About ...',
               click: () => {
                   console.log('About Clicked');
+                  dispatch.call("about",this,{})
               }
 
           },{
@@ -97,8 +98,11 @@ function createWindow () {
     app.quit()
   })
   dispatch.on("open",function(d){
-        win.webContents.send('info',{"files":d})
+        win.webContents.send('info',{"code":"files","files":d})
   })
+  dispatch.on("about",function(d){
+          win.webContents.send('info',{"code":"about"})
+    })
 
 }
 // This method will be called when Electron has finished
