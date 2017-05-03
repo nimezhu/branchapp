@@ -6,8 +6,6 @@ const selectPort = () => {
   return pyPort
 }
 
-var PythonShell = require("python-shell")
-
 const createPyProc = () => {
   let port = '' + selectPort()
   let script = path.join(__dirname, 'jsonrpc', 'jsonrpc.py')
@@ -17,7 +15,7 @@ const createPyProc = () => {
     console.log('child process success')
     //console.log(pyProc)
     pyProc.stdout.on('data',function(data){
-        
+
     });
   }
 
@@ -27,11 +25,12 @@ const createPyProc = () => {
 const exitPyProc = () => {
   pyProc.kill()
   pyProc = null
-  pyProc = null
 }
 
+fs = require("fs")
+d3 = require("d3")
+const {app, BrowserWindow, Menu, dialog, ipcMain} = require('electron')
 
-const {app, BrowserWindow} = require('electron')
 app.on('ready', createPyProc)
 app.on('will-quit', exitPyProc)
 const path = require('path')
@@ -40,11 +39,48 @@ const url = require('url')
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
+let dispatch = d3.dispatch("open")
+let showOpen = function() {
+		dialog.showOpenDialog({ properties: [ 'openFile'], filters: [{ extensions: ['txt'] }]},function(d){
+              console.log(d)
+              dispatch.call("open",this,d)
+        })
+};
 
 function createWindow () {
   // Create the browser window.
   win = new BrowserWindow({width: 900, height: 800})
+  const menuTemplate = [
+      {
+          label: 'BranchPoint',
+    submenu: [
+          {
+              label: 'About ...',
+              click: () => {
+                  console.log('About Clicked');
+              }
 
+          },{
+  type: 'separator'
+    },{
+              label: 'Quit',
+              click: () => {
+                  app.quit();
+              }
+          }
+         ]
+      }, {
+  label:'File',
+  submenu: [
+  {
+    label:"Open",
+    click: () => { showOpen() }
+  }
+  ]
+  }
+  ];
+  const menu = Menu.buildFromTemplate(menuTemplate);
+  Menu.setApplicationMenu(menu);
   // and load the index.html of the app.
   win.loadURL(path.join("file://",__dirname,"index.html"))
 
@@ -60,6 +96,10 @@ function createWindow () {
     win = null
     app.quit()
   })
+  dispatch.on("open",function(d){
+        win.webContents.send('info',{"files":d})
+  })
+
 }
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

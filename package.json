@@ -8,6 +8,7 @@
   "dependencies": {
     "d3": "~4.0.0",
     "jquery": "~2.1.0",
-    "node-json-rpc": "~0.0.1"
+    "node-json-rpc": "~0.0.1",
+    "fs" :"0.0.2"
   }
 }

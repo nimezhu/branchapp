@@ -1,7 +1,7 @@
 <html>
 
 <head>
-    <title>Photon</title>
+    <title>BranchPoint</title>
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="css/photon.min.css">
@@ -17,6 +17,8 @@
         var rpc = require('node-json-rpc');
         var d3 = require('d3');
         var $ = jquery = require('jquery')
+        var fs = require('fs')
+        const {ipcRenderer} = require('electron')
     </script>
     <script>
         if (window.module) module = window.module;
@@ -54,6 +56,9 @@
 </body>
 <script>
     (function(B) {
+        ipcRenderer.on("info", function(event,data){
+          console.log(data)
+        })
         d3.select("#introns").on("click", function() {
             introns("STAT1", render)
         })
